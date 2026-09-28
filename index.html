@@ -1,632 +1,336 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Amir Hisaab">
-<meta name="theme-color" content="#09d3ff">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="manifest" href="manifest.webmanifest">
-<title>Amir Personal Hisaab Neon</title>
-<style>
-:root{
-  --bg:#020c23; --bg2:#051634; --panel:#07172f; --panel2:#0a2344; --text:#eff8ff; --muted:#9ec0d7;
-  --line:rgba(80,210,255,.28); --line2:rgba(60,140,255,.20); --glow:rgba(0,220,255,.26);
-  --primary:#10e4ff; --primary2:#2f7dff; --good:#28d98a; --danger:#ff658a; --amber:#ffb347;
-  --shadow:0 0 25px rgba(14,234,255,.12), inset 0 0 25px rgba(11,109,255,.06);
-  --hubsize:min(38vw,170px);
-  --bubbleSize:min(25vw,114px);
-  --bubbleGap:min(34vw,155px);
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:#010916;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;overflow:hidden}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0}
-body{
-  background:
-  radial-gradient(circle at 50% 5%, rgba(0,150,255,.18), transparent 32%),
-  radial-gradient(circle at 15% 80%, rgba(0,255,230,.10), transparent 24%),
-  radial-gradient(circle at 90% 78%, rgba(105,50,255,.14), transparent 24%),
-  linear-gradient(180deg,#021029,#010713 70%);
-}
-#app{height:100dvh;max-width:500px;margin:0 auto;position:relative;overflow:hidden;
- background:
- linear-gradient(rgba(80,150,255,.07) 1px, transparent 1px),
- linear-gradient(90deg, rgba(80,150,255,.07) 1px, transparent 1px),
- radial-gradient(circle at 50% 20%, rgba(0,240,255,.06), transparent 30%),
- linear-gradient(180deg,#031227 0%,#021024 40%,#010916 100%);
- background-size:36px 36px,36px 36px,100% 100%,100% 100%;
-}
-.page{display:none;height:100%;overflow:hidden}
-.page.active{display:flex;flex-direction:column}
-.neon-line{position:absolute;border-radius:999px;border:1px solid rgba(19,210,255,.45);box-shadow:0 0 18px rgba(0,210,255,.18), inset 0 0 18px rgba(0,210,255,.1)}
-.home{padding:max(12px,env(safe-area-inset-top)) 14px calc(12px + env(safe-area-inset-bottom)); position:relative}
-.header{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:12px;position:relative;z-index:3}
-.logo-badge{
-  width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:34px;font-weight:900;color:#fff;
-  border:2px solid rgba(56,230,255,.75);box-shadow:0 0 0 6px rgba(8,80,140,.28),0 0 25px rgba(0,220,255,.35), inset 0 0 25px rgba(0,160,255,.15);
-  background:radial-gradient(circle at 30% 28%, rgba(35,160,255,.22), transparent 40%),linear-gradient(145deg,#06254d,#041227 60%);
-}
-.welcome .small{font-size:14px;color:#b8d8f0}
-.welcome .big{font-size:18px;font-weight:800;line-height:1.1;letter-spacing:.4px}
-.top-actions{display:flex;gap:10px}
-.icon-round{width:46px;height:46px;border-radius:50%;background:rgba(5,20,45,.75);color:#fff;border:1px solid rgba(78,215,255,.55);box-shadow:0 0 22px rgba(0,205,255,.18), inset 0 0 20px rgba(19,106,255,.1)}
-.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:0 4px 6px;opacity:.95}
-.signal{display:flex;gap:4px;align-items:end}.signal i{display:block;width:4px;background:#fff;border-radius:2px}.signal i:nth-child(1){height:7px}.signal i:nth-child(2){height:10px}.signal i:nth-child(3){height:13px}.signal i:nth-child(4){height:16px}
-.battery{border:1.5px solid #9eff7a;border-radius:9px;padding:2px 6px;font-size:12px;font-weight:700;color:#d9ffcf;box-shadow:0 0 12px rgba(120,255,110,.18)}
-.stage-wrap{position:relative;flex:1;min-height:0;margin-top:8px;margin-bottom:10px}
-.dashboard-stage{position:absolute;inset:0;min-height:0}
-.orbit-ring,.orbit-ring2,.orbit-ring3,.cross-ring{
- position:absolute;left:50%;top:46.5%;transform:translate(-50%,-50%);border-radius:50%;
-}
-.orbit-ring{
- width:min(92vw,430px);height:min(92vw,430px);border:2px solid rgba(36,228,255,.18);
- box-shadow:0 0 28px rgba(0,220,255,.08),inset 0 0 28px rgba(0,220,255,.05);opacity:.9
-}
-.orbit-ring2{
- width:min(78vw,360px);height:min(78vw,360px);border:1px dashed rgba(85,219,255,.30); animation:spin 26s linear infinite reverse
-}
-.orbit-ring3{
- width:min(65vw,295px);height:min(65vw,295px);border:6px solid transparent;border-top-color:rgba(27,255,247,.75);border-right-color:rgba(47,132,255,.6);filter:drop-shadow(0 0 12px rgba(0,220,255,.25));animation:spin 20s linear infinite
-}
-.cross-ring{
- width:min(56vw,254px);height:min(56vw,254px);border:1px solid rgba(59,207,255,.24)
-}
-.cross-ring:before,.cross-ring:after{
- content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(79,214,255,.22);transform:translateX(-50%);
-}
-.cross-ring:after{left:0;right:0;top:50%;height:1px;width:auto;transform:none}
-.orbit-node{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #d8ffff, #0df3ff 55%, #0a6da8);box-shadow:0 0 18px rgba(0,232,255,.8)}
-.n1{left:16%;top:54%;animation:orb 15s linear infinite}.n2{right:15%;top:39%;animation:orb 18s linear infinite reverse}.n3{left:25%;bottom:20%;animation:orb 17s linear infinite}
-.n4{right:22%;bottom:17%;animation:orb 14s linear infinite reverse}.n5{left:44%;top:15%;animation:orb 16s linear infinite}.n6{right:43%;top:14%;animation:orb 19s linear infinite reverse}
-.center-hub{
- position:absolute;left:50%;top:46.5%;transform:translate(-50%,-50%);
- width:var(--hubsize);height:var(--hubsize);border-radius:50%;
- background:
- radial-gradient(circle at 50% 32%, rgba(18,242,255,.24), transparent 40%),
- linear-gradient(180deg, rgba(8,35,70,.92), rgba(5,15,35,.94));
- border:1px solid rgba(61,222,255,.45);
- box-shadow:0 0 35px rgba(0,226,255,.25), inset 0 0 55px rgba(0,170,255,.14);
- display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:3;
-}
-.center-hub:before,.center-hub:after{
- content:"";position:absolute;border-radius:50%;inset:-14px;border:4px solid rgba(20,240,255,.25);border-top-color:rgba(78,255,244,.92);border-right-color:rgba(41,121,255,.72);animation:spin 18s linear infinite
-}
-.center-hub:after{inset:-28px;border-width:2px;border-style:dashed;border-color:rgba(79,235,255,.32);animation:spin 28s linear infinite reverse}
-.monogram{font-size:68px;font-weight:900;line-height:.82;color:#e9fbff;text-shadow:0 0 24px rgba(255,255,255,.35), 0 0 16px rgba(0,190,255,.25)}
-.monoline{font-size:12px;letter-spacing:2.1px;color:#1ae9ff;font-weight:900;margin-top:3px}
-.hub-sub{font-size:26px;font-weight:900;letter-spacing:.8px;margin-top:4px}
-.hub-mini{display:flex;gap:7px;align-items:center;color:#77efff;margin-top:7px}
-.hub-mini i{display:block;width:6px;height:6px;border-radius:50%;background:#6ff7ff;box-shadow:0 0 10px rgba(82,255,247,.9)}
-.hub-mini span{display:block;width:22px;height:3px;border-radius:99px;background:linear-gradient(90deg,#26f0ff,#0a69ff)}
-.bubble{
- position:absolute;width:var(--bubbleSize);height:var(--bubbleSize);border-radius:50%;padding:10px;
- display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:6px;
- color:#fff;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.18), transparent 32%),linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
- backdrop-filter:blur(3px);border:2px solid rgba(255,255,255,.45); box-shadow:0 0 26px rgba(0,220,255,.18), inset 0 0 30px rgba(255,255,255,.04);
- z-index:4; animation:floaty 6.6s ease-in-out infinite;
-}
-.bubble::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid currentColor;opacity:.35;filter:blur(.2px)}
-.bubble .emoji{font-size:28px;line-height:1}
-.bubble .lbl{font-size:11px;font-weight:800;line-height:1.12;max-width:88px}
-.bubble .lbl.two{max-width:76px}
-.bubble.orange{background:radial-gradient(circle at 30% 20%, rgba(255,242,212,.28), transparent 34%),linear-gradient(180deg,rgba(255,182,74,.34),rgba(120,58,0,.24)); color:#ffd481}
-.bubble.teal{background:radial-gradient(circle at 30% 20%, rgba(230,255,255,.25), transparent 34%),linear-gradient(180deg,rgba(23,232,245,.34),rgba(0,98,137,.28)); color:#79fcff}
-.bubble.pink{background:radial-gradient(circle at 30% 20%, rgba(255,224,253,.25), transparent 34%),linear-gradient(180deg,rgba(240,84,249,.33),rgba(111,20,132,.26)); color:#ffa7ff}
-.bubble.blue{background:radial-gradient(circle at 30% 20%, rgba(224,240,255,.28), transparent 34%),linear-gradient(180deg,rgba(62,152,255,.34),rgba(18,42,156,.22)); color:#8fc8ff}
-.bubble.green{background:radial-gradient(circle at 30% 20%, rgba(238,255,234,.25), transparent 34%),linear-gradient(180deg,rgba(32,230,141,.34),rgba(10,103,72,.25)); color:#84ffcb}
-.bubble.purple{background:radial-gradient(circle at 30% 20%, rgba(238,230,255,.25), transparent 34%),linear-gradient(180deg,rgba(141,92,255,.34),rgba(50,31,124,.25)); color:#c3adff}
-.bubble.silver{background:radial-gradient(circle at 30% 20%, rgba(240,247,255,.22), transparent 34%),linear-gradient(180deg,rgba(129,155,192,.30),rgba(30,53,87,.25)); color:#c7dcff}
-.bubble.sky{background:radial-gradient(circle at 30% 20%, rgba(224,240,255,.26), transparent 34%),linear-gradient(180deg,rgba(32,161,255,.31),rgba(4,67,170,.25)); color:#87d2ff}
-.bubble:active{transform:scale(.96)}
-.bubble.daily{left:50%;top:6%;margin-left:calc(var(--bubbleSize) / -2);animation-delay:-1s}
-.bubble.homex{left:8%;top:15%;animation-delay:-2s}
-.bubble.grocery{right:8%;top:16%;animation-delay:-3s}
-.bubble.ledger{left:4%;top:43%;animation-delay:-1.5s}
-.bubble.savings{right:4%;top:43%;animation-delay:-2.8s}
-.bubble.reports{left:13%;bottom:15%;animation-delay:-.7s}
-.bubble.add{left:50%;bottom:12%;margin-left:calc(var(--bubbleSize) / -2);animation-delay:-2.2s}
-.bubble.settings{right:13%;bottom:15%;animation-delay:-3.4s}
-.auto-backup{
- position:absolute;left:50%;bottom:3.5%;transform:translateX(-50%);
- width:96px;height:96px;border-radius:50%;z-index:4;color:#bbffef;
- background:radial-gradient(circle at 30% 20%, rgba(229,255,242,.22), transparent 34%),linear-gradient(180deg,rgba(8,124,100,.32),rgba(2,44,56,.28));
- border:2px solid rgba(90,255,216,.5); box-shadow:0 0 22px rgba(36,238,173,.20), inset 0 0 24px rgba(123,255,206,.06); display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;
- animation:pulseSoft 3.8s ease-in-out infinite;
-}
-.auto-backup .icon{font-size:22px}.auto-backup .small{font-size:11px;font-weight:800;line-height:1.05;text-align:center}
-.auto-backup .tick{position:absolute;right:14px;top:13px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#23d96f;color:#f1fff1;font-size:12px;box-shadow:0 0 12px rgba(49,255,113,.45)}
-.bottom-bar{
- position:relative;z-index:4;border-radius:24px;padding:14px 18px;background:linear-gradient(180deg,rgba(5,18,38,.88),rgba(3,12,28,.96));
- border:1px solid rgba(44,223,255,.52); box-shadow:0 0 26px rgba(0,220,255,.18), inset 0 0 24px rgba(0,132,255,.08);
- display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px; overflow:hidden
-}
-.bottom-bar:before{
- content:"";position:absolute;inset:8px;border-radius:18px;border:1px solid rgba(33,198,255,.14);pointer-events:none
-}
-.bottom-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#89e8ff;background:rgba(20,82,120,.35);border:1px solid rgba(44,223,255,.25)}
-.bottom-text small{display:block;font-size:11px;letter-spacing:1.2px;color:#8deeff;font-weight:800}
-.bottom-text strong{display:block;font-size:19px;margin-top:4px;color:#dffcff;text-shadow:0 0 16px rgba(33,219,255,.25)}
-.bottom-go{width:48px;height:48px;border-radius:50%;background:rgba(4,18,39,.95);border:1px solid rgba(47,218,255,.6);box-shadow:0 0 18px rgba(0,220,255,.15);color:#dffcff;font-size:22px}
-.wave{position:absolute;right:70px;bottom:18px;width:110px;height:36px;border-bottom:2px solid rgba(65,204,255,.28);border-radius:50%;opacity:.8}
-.wave:before,.wave:after{content:"";position:absolute;left:0;right:0;height:100%;border-bottom:2px solid rgba(65,204,255,.18);border-radius:50%;transform:translateY(-7px)}
-.wave:after{transform:translateY(7px)}
-.section-top{
- display:grid;grid-template-columns:44px 1fr 44px;align-items:center;padding:max(10px,env(safe-area-inset-top)) 12px 10px;
- border-bottom:1px solid rgba(63,220,255,.18);background:linear-gradient(180deg,rgba(3,15,35,.98),rgba(4,18,39,.94));box-shadow:0 0 30px rgba(0,220,255,.08)
-}
-.section-top h2{text-align:center;margin:0;font-size:18px;letter-spacing:.3px}
-.round-btn{width:40px;height:40px;border-radius:50%;background:rgba(7,25,50,.84);color:#fff;border:1px solid rgba(58,220,255,.35);box-shadow:0 0 16px rgba(0,220,255,.08)}
-.content{flex:1;min-height:0;overflow:auto;padding:14px 14px calc(18px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
-.box{background:linear-gradient(180deg,rgba(5,19,42,.92),rgba(2,12,26,.95));border:1px solid rgba(44,223,255,.18);border-radius:20px;padding:14px;box-shadow:0 0 18px rgba(0,220,255,.06), inset 0 0 18px rgba(0,132,255,.06);margin-bottom:12px}
-.box h3{margin:0 0 10px;font-size:14px;color:#9ff7ff}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.field{margin-bottom:10px}.field label{display:block;font-size:10px;font-weight:800;letter-spacing:.7px;color:#86eaf6;margin:0 0 6px 2px}
-.input,select,textarea{
- width:100%;padding:11px 12px;border-radius:14px;border:1px solid rgba(59,208,255,.28);background:rgba(12,32,58,.8);color:#f4fbff;outline:none;box-shadow:inset 0 0 18px rgba(0,120,255,.06)
-}
-textarea{min-height:68px;resize:vertical}
-.primary,.secondary{
- width:100%;padding:12px 14px;border-radius:14px;font-weight:800;letter-spacing:.2px
-}
-.primary{background:linear-gradient(135deg,#19ecff,#296cff);color:#031321;box-shadow:0 0 18px rgba(27,227,255,.25)}
-.secondary{background:rgba(11,31,58,.82);border:1px solid rgba(61,218,255,.22);color:#e7fdff}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:rgba(12,32,58,.76);border:1px solid rgba(58,206,255,.16);border-radius:16px;padding:12px}
-.stat small{display:block;color:#8defff;font-size:10px;font-weight:800}.stat strong{display:block;margin-top:5px;font-size:17px}
-.list{display:flex;flex-direction:column;gap:8px}
-.item{
- display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:12px;border-radius:15px;
- background:rgba(10,29,52,.78);border:1px solid rgba(60,210,255,.14)
-}
-.item b{font-size:13px}.item small{display:block;margin-top:3px;color:#9cc7dd;font-size:10px}.amount{font-weight:900;font-size:13px}
-.red{color:#ff89a7}.green{color:#7dffc1}.empty{text-align:center;padding:26px 10px;color:#8ab8ce;font-size:12px}
-.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.theme-card{padding:10px;border-radius:16px;background:rgba(11,31,58,.82);border:2px solid transparent;color:#fff;text-align:left}
-.theme-card.active{border-color:#25e4ff;box-shadow:0 0 18px rgba(25,236,255,.16)}
-.swatches{display:flex;gap:5px;margin-bottom:8px}.swatches i{display:block;width:18px;height:18px;border-radius:50%}
-.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:99px;background:rgba(14,44,72,.85);border:1px solid rgba(54,212,255,.18);font-size:10px;color:#a3f3ff;font-weight:800}
-.note{font-size:11px;line-height:1.45;color:#a8d2e4}
-.helper{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
-hr.sep{border:none;border-top:1px solid rgba(60,210,255,.12);margin:12px 0}
-@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
-@keyframes orb{50%{transform:translateY(-4px)}}
-@keyframes floaty{
- 0%,100%{transform:translateY(0) scale(1)}
- 50%{transform:translateY(-8px) scale(1.02)}
-}
-@keyframes pulseSoft{
- 0%,100%{box-shadow:0 0 22px rgba(36,238,173,.18), inset 0 0 24px rgba(123,255,206,.06)}
- 50%{box-shadow:0 0 30px rgba(36,238,173,.28), inset 0 0 30px rgba(123,255,206,.12)}
-}
-@media (max-height:780px){
- :root{--hubsize:min(34vw,146px);--bubbleSize:min(22vw,96px)}
- .bubble .emoji{font-size:24px}.bubble .lbl{font-size:10px}
- .bottom-text strong{font-size:17px}.auto-backup{width:84px;height:84px}
-}
-@media (max-width:390px){
- .header{grid-template-columns:56px 1fr auto}.logo-badge{width:56px;height:56px;font-size:30px}
- .top-actions{gap:8px}.icon-round{width:40px;height:40px}
- .welcome .small{font-size:13px}.welcome .big{font-size:17px}
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#25313a" />
+  <title>Amir Task Manager</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-<div id="app">
-  <section id="home" class="page home active">
-    <div class="statusbar">
-      <div id="clockView">9:41</div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div class="signal"><i></i><i></i><i></i><i></i></div>
-        <div style="font-size:16px">⌁</div>
-        <div class="battery" id="batteryLabel">100</div>
-      </div>
-    </div>
-    <div class="header">
-      <div class="logo-badge">A</div>
-      <div class="welcome">
-        <div class="small">Welcome Back</div>
-        <div class="big">AMIR</div>
+<body data-theme="office">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <h1>AMIR TASK MANAGER</h1>
+          <p>Personal + Office • Offline-first</p>
+        </div>
       </div>
       <div class="top-actions">
-        <button class="icon-round" id="cycleThemeBtn" title="Theme">☼</button>
-        <button class="icon-round" data-go="settings" title="Settings">⚙</button>
+        <button class="icon-btn" id="themeBtn" title="Change theme">◐</button>
+        <button class="icon-btn" id="backupBtn" title="Backup">⇩</button>
+        <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
       </div>
-    </div>
+    </header>
 
-    <div class="stage-wrap">
-      <div class="dashboard-stage">
-        <div class="orbit-ring"></div>
-        <div class="orbit-ring2"></div>
-        <div class="orbit-ring3"></div>
-        <div class="cross-ring"></div>
+    <nav class="tabs" aria-label="Main navigation">
+      <button class="tab active" data-view="dashboard">Dashboard</button>
+      <button class="tab" data-view="calendar">Calendar</button>
+      <button class="tab" data-view="tasks">Tasks</button>
+      <button class="tab" data-view="reports">Reports</button>
+    </nav>
 
-        <div class="orbit-node n1"></div>
-        <div class="orbit-node n2"></div>
-        <div class="orbit-node n3"></div>
-        <div class="orbit-node n4"></div>
-        <div class="orbit-node n5"></div>
-        <div class="orbit-node n6"></div>
-
-        <button class="bubble teal daily" data-go="daily"><div class="emoji">🧾</div><div class="lbl two">Daily<br>Expense</div></button>
-        <button class="bubble orange homex" data-go="homeexpense"><div class="emoji">🏠</div><div class="lbl two">Home<br>Expense</div></button>
-        <button class="bubble pink grocery" data-go="grocery"><div class="emoji">🛒</div><div class="lbl">Grocery</div></button>
-        <button class="bubble blue ledger" data-go="ledger"><div class="emoji">📒</div><div class="lbl">Ledger</div></button>
-        <button class="bubble green savings" data-go="savings"><div class="emoji">🐷</div><div class="lbl">Savings</div></button>
-        <button class="bubble purple reports" data-go="reports"><div class="emoji">📊</div><div class="lbl">Reports</div></button>
-        <button class="bubble sky add" data-go="add"><div class="emoji">＋</div><div class="lbl two">Add<br>Expense</div></button>
-        <button class="bubble silver settings" data-go="settings"><div class="emoji">⚙</div><div class="lbl">Settings</div></button>
-
-        <div class="center-hub">
-          <div class="monogram">A</div>
-          <div class="hub-sub">AMIR</div>
-          <div class="monoline">PERSONAL HISAAB</div>
-          <div class="hub-mini"><i></i><span></span><i></i></div>
+    <main>
+      <section class="view active" id="dashboardView">
+        <div class="toolbar">
+          <select id="dashboardArea">
+            <option value="All">All</option>
+            <option value="Office">Office</option>
+            <option value="Personal">Personal</option>
+          </select>
+          <div class="date-chip" id="todayChip"></div>
         </div>
 
-        <button class="auto-backup" data-go="settings" title="Backup">
-          <div class="icon">☁</div>
-          <div class="small">Auto Backup</div>
-          <div class="tick">✓</div>
-        </button>
-      </div>
-    </div>
-
-    <div class="bottom-bar">
-      <div class="bottom-icon">▮▮</div>
-      <div class="bottom-text">
-        <small>OFFICE BALANCE PREVIEW</small>
-        <strong id="officeBalance">AED 0</strong>
-      </div>
-      <button class="bottom-go" data-go="settings">›</button>
-      <div class="wave"></div>
-    </div>
-  </section>
-
-  <section id="add" class="page">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Add Expense</h2><span></span></div>
-    <div class="content">
-      <div class="box">
-        <div class="row">
-          <div class="field"><label>AMOUNT (AED)</label><input id="expenseAmount" class="input" type="number" inputmode="decimal" placeholder="0.00"></div>
-          <div class="field"><label>DATE</label><input id="expenseDate" class="input" type="date"></div>
+        <div class="hero-card">
+          <div>
+            <span class="eyebrow">Today</span>
+            <h2 id="heroGreeting">Your day at a glance</h2>
+            <p id="heroSummary">0 tasks scheduled</p>
+          </div>
+          <button class="primary" id="quickAddBtn">＋ Add Task</button>
         </div>
-        <div class="field"><label>CATEGORY</label><select id="expenseCategory" class="input">
-          <option>Daily Expense</option><option>Home Expense</option><option>Grocery</option><option>Transport</option><option>Bills</option><option>Shopping</option><option>Health</option><option>Family</option><option>Other</option>
-        </select></div>
-        <div class="field"><label>NOTE</label><textarea id="expenseNote" class="input" placeholder="Optional note"></textarea></div>
-        <button id="saveExpense" class="primary">Save Expense</button>
-      </div>
-      <div class="box"><h3>Recent Expenses</h3><div id="recentExpenses" class="list"></div></div>
-    </div>
-  </section>
 
-  <section id="daily" class="page category" data-category="Daily Expense">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Daily Expense</h2><button class="round-btn quickAdd">＋</button></div>
-    <div class="content"><div class="box"><div class="stats"><div class="stat"><small>This Month</small><strong class="catMonth">AED 0</strong></div><div class="stat"><small>Entries</small><strong class="catCount">0</strong></div></div></div><div class="catList list"></div></div>
-  </section>
-  <section id="homeexpense" class="page category" data-category="Home Expense">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Home Expense</h2><button class="round-btn quickAdd">＋</button></div>
-    <div class="content"><div class="box"><div class="stats"><div class="stat"><small>This Month</small><strong class="catMonth">AED 0</strong></div><div class="stat"><small>Entries</small><strong class="catCount">0</strong></div></div></div><div class="catList list"></div></div>
-  </section>
-  <section id="grocery" class="page category" data-category="Grocery">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Grocery</h2><button class="round-btn quickAdd">＋</button></div>
-    <div class="content"><div class="box"><div class="stats"><div class="stat"><small>This Month</small><strong class="catMonth">AED 0</strong></div><div class="stat"><small>Entries</small><strong class="catCount">0</strong></div></div></div><div class="catList list"></div></div>
-  </section>
-
-  <section id="ledger" class="page">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Ledger</h2><span></span></div>
-    <div class="content">
-      <div class="box">
-        <div class="row">
-          <div class="field"><label>PERSON</label><input id="ledgerPerson" class="input" placeholder="Name"></div>
-          <div class="field"><label>AMOUNT (AED)</label><input id="ledgerAmount" class="input" type="number" inputmode="decimal" placeholder="0.00"></div>
+        <div class="kpi-grid">
+          <button class="kpi-card" data-filter="today">
+            <span>Today</span><strong id="kpiToday">0</strong><small>due today</small>
+          </button>
+          <button class="kpi-card danger" data-filter="overdue">
+            <span>Overdue</span><strong id="kpiOverdue">0</strong><small>need attention</small>
+          </button>
+          <button class="kpi-card success" data-filter="complete">
+            <span>Complete</span><strong id="kpiComplete">0</strong><small>finished</small>
+          </button>
+          <button class="kpi-card warning" data-filter="progress">
+            <span>In Progress</span><strong id="kpiProgress">0</strong><small>active</small>
+          </button>
         </div>
-        <div class="field"><label>TYPE</label><select id="ledgerType" class="input"><option value="pending">Pending to receive</option><option value="payable">I have to pay</option><option value="excess">Excess / credit</option></select></div>
-        <div class="field"><label>NOTE</label><input id="ledgerNote" class="input" placeholder="Optional note"></div>
-        <button id="saveLedger" class="primary">Add Ledger Record</button>
+
+        <div class="panel">
+          <div class="panel-title">
+            <h3>Overall Progress</h3>
+            <strong id="progressPct">0%</strong>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <h3>Today’s Priorities</h3>
+            <button class="text-btn" data-jump="tasks">View all</button>
+          </div>
+          <div id="todayList" class="task-list compact"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Frequency Summary</h3></div>
+          <div class="mini-grid">
+            <div><span>Daily</span><strong id="freqDaily">0</strong></div>
+            <div><span>Weekly</span><strong id="freqWeekly">0</strong></div>
+            <div><span>Monthly</span><strong id="freqMonthly">0</strong></div>
+            <div><span>One-Time</span><strong id="freqOneTime">0</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="calendarView">
+        <div class="calendar-toolbar">
+          <button class="icon-btn" id="prevMonthBtn">‹</button>
+          <div class="month-title">
+            <select id="monthSelect"></select>
+            <select id="yearSelect"></select>
+          </div>
+          <button class="icon-btn" id="nextMonthBtn">›</button>
+        </div>
+
+        <div class="toolbar">
+          <select id="calendarArea">
+            <option value="All">All</option>
+            <option value="Office">Office</option>
+            <option value="Personal">Personal</option>
+          </select>
+          <button class="secondary" id="goTodayBtn">Today</button>
+        </div>
+
+        <div class="calendar-card">
+          <div class="weekday-grid">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+        </div>
+
+        <div class="panel selected-day-panel">
+          <div class="panel-title">
+            <div>
+              <span class="eyebrow">Selected date</span>
+              <h3 id="selectedDateTitle">Select a date</h3>
+            </div>
+            <button class="primary small" id="addForDateBtn">＋ Task</button>
+          </div>
+          <div id="selectedDateTasks" class="task-list compact"></div>
+        </div>
+      </section>
+
+      <section class="view" id="tasksView">
+        <div class="search-row">
+          <input type="search" id="taskSearch" placeholder="Search tasks, notes, category…" />
+          <button class="primary square" id="taskAddBtn">＋</button>
+        </div>
+
+        <div class="filter-grid">
+          <select id="taskAreaFilter">
+            <option value="All">All areas</option>
+            <option value="Office">Office</option>
+            <option value="Personal">Personal</option>
+          </select>
+          <select id="taskStatusFilter">
+            <option value="All">All status</option>
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Complete</option>
+            <option>Cancelled</option>
+          </select>
+          <select id="taskFreqFilter">
+            <option value="All">All frequency</option>
+            <option>One-Time</option>
+            <option>Daily</option>
+            <option>Weekly</option>
+            <option>Monthly</option>
+          </select>
+          <select id="taskPriorityFilter">
+            <option value="All">All priority</option>
+            <option>Critical</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+
+        <div class="list-header">
+          <span id="taskCountLabel">0 tasks</span>
+          <button class="text-btn" id="clearFiltersBtn">Clear filters</button>
+        </div>
+        <div id="allTasksList" class="task-list"></div>
+      </section>
+
+      <section class="view" id="reportsView">
+        <div class="panel">
+          <div class="panel-title"><h3>Task Distribution</h3></div>
+          <div class="report-grid">
+            <div class="report-card"><span>Office</span><strong id="reportOffice">0</strong></div>
+            <div class="report-card"><span>Personal</span><strong id="reportPersonal">0</strong></div>
+            <div class="report-card"><span>High + Critical</span><strong id="reportHigh">0</strong></div>
+            <div class="report-card"><span>Completed this month</span><strong id="reportMonthDone">0</strong></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Data Tools</h3></div>
+          <div class="button-stack">
+            <button class="secondary" id="exportJsonBtn">Export Backup (.json)</button>
+            <button class="secondary" id="exportCsvBtn">Export Tasks (.csv)</button>
+            <label class="secondary file-label">Import Backup
+              <input type="file" id="importJsonInput" accept=".json,application/json" hidden />
+            </label>
+          </div>
+        </div>
+
+        
+        <div class="panel">
+          <div class="panel-title">
+            <h3>Automatic Sync</h3>
+            <span class="sync-badge" id="syncBadge">Local only</span>
+          </div>
+          <p class="muted">Connect the same private sync account on PC and iPhone. The app still works offline and synchronizes when internet returns.</p>
+          <div class="sync-grid">
+            <label>Supabase Project URL<input type="url" id="syncProjectUrl" placeholder="https://xxxx.supabase.co"></label>
+            <label>Supabase Anon Key<input type="password" id="syncAnonKey" placeholder="Paste anon public key"></label>
+            <label>Email<input type="email" id="syncEmail" placeholder="your@email.com"></label>
+            <label>Password<input type="password" id="syncPassword" placeholder="Account password"></label>
+          </div>
+          <div class="sync-actions">
+            <button class="primary" id="syncConnectBtn">Sign In / Connect</button>
+            <button class="secondary" id="syncNowBtn">Sync Now</button>
+            <button class="secondary hidden" id="syncSignOutBtn">Sign Out</button>
+          </div>
+          <p class="muted small-text" id="syncInfo">Not connected. Data is stored only on this device.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Offline Status</h3></div>
+          <p class="muted" id="offlineStatus">Checking…</p>
+          <p class="muted">Your task data is stored locally on this device. Export backups regularly if the data is important.</p>
+        </div>
+      </section>
+    </main>
+
+    <button id="floatingAdd" class="fab" aria-label="Add task">＋</button>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal-backdrop hidden" id="taskModalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">Task</span>
+          <h2 id="taskModalTitle">Add Task</h2>
+        </div>
+        <button class="icon-btn" id="closeTaskModal">×</button>
       </div>
-      <div id="ledgerList" class="list"></div>
+
+      <form id="taskForm">
+        <input type="hidden" id="taskId" />
+        <div class="form-grid two">
+          <label>Date<input type="date" id="taskDate" required /></label>
+          <label>Due Time<input type="time" id="taskTime" /></label>
+        </div>
+        <label>Task Name<input type="text" id="taskName" required placeholder="What needs to be done?" /></label>
+        <div class="form-grid two">
+          <label>Area
+            <select id="taskArea"><option>Office</option><option>Personal</option></select>
+          </label>
+          <label>Category
+            <select id="taskCategory">
+              <option>General</option><option>Import / Export</option><option>Accounts</option>
+              <option>Follow-up</option><option>Meeting</option><option>Family</option>
+              <option>Health</option><option>Shopping</option><option>Payment</option>
+              <option>Documents</option><option>Travel</option><option>Other</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-grid two">
+          <label>Frequency
+            <select id="taskFrequency">
+              <option>One-Time</option><option>Daily</option><option>Weekly</option><option>Monthly</option>
+            </select>
+          </label>
+          <label>Status
+            <select id="taskStatus">
+              <option>Not Started</option><option>In Progress</option><option>Complete</option><option>Cancelled</option>
+            </select>
+          </label>
+        </div>
+        <label>Priority
+          <select id="taskPriority">
+            <option>Critical</option><option>High</option><option selected>Medium</option><option>Low</option>
+          </select>
+        </label>
+        <label>Notes<textarea id="taskNotes" rows="3" placeholder="Optional notes"></textarea></label>
+
+        <div class="modal-actions">
+          <button type="button" class="danger-outline hidden" id="deleteTaskBtn">Delete</button>
+          <div class="grow"></div>
+          <button type="button" class="secondary" id="cancelTaskBtn">Cancel</button>
+          <button type="submit" class="primary">Save Task</button>
+        </div>
+      </form>
     </div>
-  </section>
+  </div>
 
-  <section id="savings" class="page">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Savings</h2><span></span></div>
-    <div class="content">
-      <div class="box">
-        <div class="row"><div class="field"><label>AMOUNT (AED)</label><input id="savingAmount" class="input" type="number" inputmode="decimal" placeholder="0.00"></div><div class="field"><label>DATE</label><input id="savingDate" class="input" type="date"></div></div>
-        <div class="field"><label>NOTE</label><input id="savingNote" class="input" placeholder="Optional note"></div>
-        <button id="saveSaving" class="primary">Add Saving</button>
+  <!-- Settings Modal -->
+  <div class="modal-backdrop hidden" id="settingsBackdrop">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">Settings</span>
+          <h2>App Preferences</h2>
+        </div>
+        <button class="icon-btn" id="closeSettings">×</button>
       </div>
-      <div id="savingList" class="list"></div>
-    </div>
-  </section>
 
-  <section id="reports" class="page">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Reports</h2><span></span></div>
-    <div class="content">
-      <div class="box"><h3>Personal Overview</h3><div class="stats">
-        <div class="stat"><small>Total Expense</small><strong id="reportExpense">AED 0</strong></div>
-        <div class="stat"><small>Total Saved</small><strong id="reportSaved">AED 0</strong></div>
-        <div class="stat"><small>This Month</small><strong id="reportMonth">AED 0</strong></div>
-        <div class="stat"><small>Balance</small><strong id="reportBalance">AED 0</strong></div>
-      </div></div>
-      <div class="box"><h3>Expense by Category</h3><div id="categoryTotals" class="list"></div></div>
-    </div>
-  </section>
+      <label>Theme
+        <select id="themeSelect">
+          <option value="office">Office — Charcoal / Steel Blue</option>
+          <option value="personal">Personal — Soft Teal</option>
+          <option value="midnight">Midnight</option>
+          <option value="sand">Warm Sand</option>
+          <option value="violet">Violet</option>
+          <option value="forest">Forest</option>
+        </select>
+      </label>
 
-  <section id="settings" class="page">
-    <div class="section-top"><button class="round-btn back">‹</button><h2>Settings</h2><span></span></div>
-    <div class="content">
-      <div class="box"><h3>Theme Selection</h3><div id="themeGrid" class="theme-grid"></div></div>
-      <div class="box">
-        <h3>Office Balance Preview</h3>
-        <div class="field"><label>OFFICE BALANCE (AED)</label><input id="officeInput" class="input" type="number" inputmode="decimal" placeholder="0.00"></div>
-        <button id="saveOffice" class="primary">Update Balance Preview</button>
-        <p class="note">Only a small office balance preview appears on the dashboard. No office names, Abdul details, or office records are stored here.</p>
-      </div>
-      <div class="box">
-        <h3>Backup & Restore</h3>
-        <div class="helper"><span class="pill">Auto-protected</span><span class="note" id="backupCount">0 snapshots</span></div>
-        <hr class="sep">
-        <div class="row"><button id="exportBtn" class="secondary">Export Backup</button><button id="importBtn" class="secondary">Import Backup</button></div>
-        <input id="importFile" type="file" accept=".json,application/json" hidden>
-        <div style="height:8px"></div>
-        <button id="restoreBtn" class="secondary">Restore Latest Auto Backup</button>
-        <p class="note">The app creates a safety backup before every change and keeps the newest 10 snapshots on your device.</p>
-      </div>
-      <div class="box">
-        <h3>App View</h3>
-        <span class="pill">Standalone Home Screen Mode</span>
-        <p class="note">When added to iPhone Home Screen, it opens as a full app-style window without Safari controls and without a separate fullscreen button.</p>
+      <label>Default View
+        <select id="defaultAreaSelect">
+          <option>All</option><option>Office</option><option>Personal</option>
+        </select>
+      </label>
+
+      <label class="check-row">
+        <input type="checkbox" id="confirmDeleteCheck" checked />
+        Confirm before deleting tasks
+      </label>
+
+      <div class="button-stack">
+        <button class="secondary" id="installHelpBtn">How to Install on iPhone</button>
+        <button class="danger-outline" id="clearAllDataBtn">Erase All Tasks</button>
       </div>
     </div>
-  </section>
-</div>
+  </div>
 
-<script>
-const DATA_KEY='amirPersonalHisaabV6Neon';
-const BACKUP_KEY='amirPersonalHisaabV6Neon_backups';
-const LEGACY_KEYS=['amirPersonalHisaabV5','amirPersonalHisaabV5_backups'];
-const MAX_BACKUPS=10;
-const THEMES={
- neon:{name:'Neon Blue',vars:{'--bg':'#020c23','--bg2':'#051634','--panel':'#07172f','--panel2':'#0a2344','--text':'#eff8ff','--muted':'#9ec0d7','--line':'rgba(80,210,255,.28)','--glow':'rgba(0,220,255,.26)','--primary':'#10e4ff','--primary2':'#2f7dff'}},
- aurora:{name:'Aurora',vars:{'--bg':'#031b1d','--bg2':'#082b2e','--panel':'#072528','--panel2':'#0b3a40','--text':'#efffff','--muted':'#95dcd3','--line':'rgba(71,255,225,.24)','--glow':'rgba(84,255,219,.24)','--primary':'#48ffd9','--primary2':'#1ea6d6'}},
- violet:{name:'Violet',vars:{'--bg':'#12081f','--bg2':'#21103a','--panel':'#170d29','--panel2':'#281646','--text':'#fbf5ff','--muted':'#ccb6e5','--line':'rgba(180,126,255,.24)','--glow':'rgba(180,126,255,.24)','--primary':'#c477ff','--primary2':'#7f77ff'}},
- emerald:{name:'Emerald',vars:{'--bg':'#041611','--bg2':'#0b2c22','--panel':'#082119','--panel2':'#11362b','--text':'#f0fff8','--muted':'#addbc9','--line':'rgba(91,255,182,.22)','--glow':'rgba(91,255,182,.22)','--primary':'#42f6a0','--primary2':'#1ecf7d'}},
- sunset:{name:'Sunset',vars:{'--bg':'#1d0b05','--bg2':'#351408','--panel':'#281008','--panel2':'#3f1d0e','--text':'#fff7f0','--muted':'#f0c4ac','--line':'rgba(255,166,94,.23)','--glow':'rgba(255,166,94,.23)','--primary':'#ffb347','--primary2':'#ff6d52'}},
- rose:{name:'Rose',vars:{'--bg':'#1b0813','--bg2':'#320f24','--panel':'#250b19','--panel2':'#3a1027','--text':'#fff4fa','--muted':'#e3b6cb','--line':'rgba(255,122,178,.23)','--glow':'rgba(255,122,178,.23)','--primary':'#ff7ab2','--primary2':'#ff5da7'}},
- silver:{name:'Silver',vars:{'--bg':'#0b1018','--bg2':'#182232','--panel':'#101827','--panel2':'#1b2940','--text':'#f5f9ff','--muted':'#bfcbdd','--line':'rgba(174,208,255,.20)','--glow':'rgba(174,208,255,.20)','--primary':'#b3d7ff','--primary2':'#6e97c4'}},
- aqua:{name:'Aqua',vars:{'--bg':'#04161a','--bg2':'#0b2f34','--panel':'#08242a','--panel2':'#0f3b41','--text':'#f1fdff','--muted':'#b4dfe3','--line':'rgba(101,238,255,.22)','--glow':'rgba(101,238,255,.22)','--primary':'#55ebff','--primary2':'#1cb7cf'}},
- gold:{name:'Gold',vars:{'--bg':'#151006','--bg2':'#2e220a','--panel':'#201708','--panel2':'#37280d','--text':'#fffaf0','--muted':'#dfd0a4','--line':'rgba(252,214,92,.20)','--glow':'rgba(252,214,92,.20)','--primary':'#f7d363','--primary2':'#d3922c'}},
- ruby:{name:'Ruby',vars:{'--bg':'#16080a','--bg2':'#2d0f12','--panel':'#200b0f','--panel2':'#391118','--text':'#fff5f6','--muted':'#e1babf','--line':'rgba(255,116,116,.21)','--glow':'rgba(255,116,116,.21)','--primary':'#ff7d7d','--primary2':'#d04959'}},
- sky:{name:'Sky',vars:{'--bg':'#051322','--bg2':'#0f2942','--panel':'#0a1c31','--panel2':'#123353','--text':'#f1fbff','--muted':'#b0d9ef','--line':'rgba(110,200,255,.21)','--glow':'rgba(110,200,255,.21)','--primary':'#70cbff','--primary2':'#2a8bff'}},
- cyberlime:{name:'Cyber Lime',vars:{'--bg':'#0b1508','--bg2':'#1f3010','--panel':'#121d0d','--panel2':'#253a13','--text':'#f9fff2','--muted':'#d6e6b2','--line':'rgba(185,255,92,.22)','--glow':'rgba(185,255,92,.22)','--primary':'#c6ff57','--primary2':'#67d142'}}
-};
+  <div id="toast" class="toast hidden"></div>
 
-function blank(){return {expenses:[],savings:[],ledger:[],officeBalance:0,theme:'neon',created:new Date().toISOString()}}
-
-function load(){
-  try{
-    const current=localStorage.getItem(DATA_KEY);
-    if(current) return Object.assign(blank(), JSON.parse(current));
-    for(const key of ['amirPersonalHisaabV5', 'amirPersonalHisaabV6', 'amirPersonalHisaab', ...Object.keys(localStorage)]){
-      if(!key || key===DATA_KEY || key===BACKUP_KEY) continue;
-      if(!/(hisaab|expense|personal)/i.test(key)) continue;
-      try{
-        const raw=JSON.parse(localStorage.getItem(key)||'{}');
-        const candidate=raw.state||raw;
-        if(candidate && (Array.isArray(candidate.expenses)||Array.isArray(candidate.savings)||Array.isArray(candidate.ledger))){
-          const migrated=Object.assign(blank(), candidate);
-          localStorage.setItem(DATA_KEY, JSON.stringify(migrated));
-          return migrated;
-        }
-      }catch(_){}
-    }
-    return blank();
-  }catch(e){ return blank(); }
-}
-let state=load();
-
-function autoBackup(reason='change'){
-  try{
-    const old=localStorage.getItem(DATA_KEY);
-    if(!old) return;
-    let backups=JSON.parse(localStorage.getItem(BACKUP_KEY)||'[]');
-    backups.unshift({time:new Date().toISOString(), reason, data:old});
-    backups=backups.slice(0, MAX_BACKUPS);
-    localStorage.setItem(BACKUP_KEY, JSON.stringify(backups));
-  }catch(e){}
-}
-function persist(reason='change'){
-  autoBackup(reason);
-  localStorage.setItem(DATA_KEY, JSON.stringify(state));
-  renderAll();
-}
-function money(n){return 'AED '+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2})}
-function today(){return new Date().toISOString().slice(0,10)}
-function monthMatch(d){if(!d) return false; const a=new Date(d+'T00:00:00'); const n=new Date(); return a.getMonth()===n.getMonth() && a.getFullYear()===n.getFullYear();}
-function safe(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function applyTheme(name){
-  const theme = THEMES[name] || THEMES.neon;
-  Object.entries(theme.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
-  state.theme = name;
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', theme.vars['--primary'] || '#09d3ff');
-}
-function cycleTheme(){
-  const keys=Object.keys(THEMES);
-  const idx=keys.indexOf(state.theme);
-  state.theme=keys[(idx+1)%keys.length];
-  persist('theme-change');
-}
-function go(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==='add' && !document.getElementById('expenseDate').value) document.getElementById('expenseDate').value=today();
-  if(id==='savings' && !document.getElementById('savingDate').value) document.getElementById('savingDate').value=today();
-  renderAll();
-}
-document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>go(el.dataset.go)));
-document.querySelectorAll('.back').forEach(el=>el.onclick=()=>go('home'));
-document.querySelectorAll('.quickAdd').forEach(el=>el.onclick=()=>go('add'));
-document.getElementById('cycleThemeBtn').onclick = cycleTheme;
-
-function expenseHTML(x){
-  return `<div class="item"><div><b>${safe(x.category)}</b><small>${safe(x.date)}${x.note ? ' • '+safe(x.note):''}</small></div><span class="amount red">-${money(x.amount)}</span></div>`;
-}
-function savingHTML(x){
-  return `<div class="item"><div><b>Saving</b><small>${safe(x.date)}${x.note ? ' • '+safe(x.note):''}</small></div><span class="amount green">+${money(x.amount)}</span></div>`;
-}
-function ledgerHTML(x){
-  const cls = x.type==='payable' ? 'red' : 'green';
-  const label = x.type==='payable' ? 'Payable' : x.type==='excess' ? 'Excess / Credit' : 'Pending to receive';
-  return `<div class="item"><div><b>${safe(x.person)}</b><small>${label}${x.note ? ' • '+safe(x.note):''}</small></div><span class="amount ${cls}">${money(x.amount)}</span></div>`;
-}
-function renderThemes(){
-  const grid=document.getElementById('themeGrid');
-  grid.innerHTML = Object.entries(THEMES).map(([k,t])=>`
-    <button class="theme-card ${state.theme===k?'active':''}" data-theme="${k}">
-      <div class="swatches">
-        <i style="background:${t.vars['--primary']}"></i>
-        <i style="background:${t.vars['--primary2']}"></i>
-        <i style="background:${t.vars['--bg2']}"></i>
-      </div>
-      <div style="font-size:12px;font-weight:800">${t.name}</div>
-    </button>`).join('');
-  grid.querySelectorAll('[data-theme]').forEach(btn=>btn.onclick=()=>{
-    state.theme = btn.dataset.theme;
-    persist('theme-change');
-  });
-}
-function renderAll(){
-  applyTheme(state.theme);
-  const totalExp=state.expenses.reduce((a,x)=>a+Number(x.amount||0),0);
-  const totalSaved=state.savings.reduce((a,x)=>a+Number(x.amount||0),0);
-  const monthExp=state.expenses.filter(x=>monthMatch(x.date)).reduce((a,x)=>a+Number(x.amount||0),0);
-
-  document.getElementById('officeBalance').textContent = money(state.officeBalance);
-  document.getElementById('officeInput').value = state.officeBalance || '';
-
-  document.getElementById('recentExpenses').innerHTML = state.expenses.length ? state.expenses.slice(0,8).map(expenseHTML).join('') : '<div class="empty">No expense records yet.</div>';
-  document.getElementById('savingList').innerHTML = state.savings.length ? state.savings.map(savingHTML).join('') : '<div class="empty">No savings records yet.</div>';
-  document.getElementById('ledgerList').innerHTML = state.ledger.length ? state.ledger.map(ledgerHTML).join('') : '<div class="empty">No ledger records yet.</div>';
-
-  document.getElementById('reportExpense').textContent = money(totalExp);
-  document.getElementById('reportSaved').textContent = money(totalSaved);
-  document.getElementById('reportMonth').textContent = money(monthExp);
-  document.getElementById('reportBalance').textContent = money(totalSaved-totalExp);
-
-  const totals={}; state.expenses.forEach(x=>totals[x.category]=(totals[x.category]||0)+Number(x.amount||0));
-  const cats=Object.entries(totals).sort((a,b)=>b[1]-a[1]);
-  document.getElementById('categoryTotals').innerHTML = cats.length ? cats.map(([k,v])=>`<div class="item"><b>${safe(k)}</b><span class="amount">${money(v)}</span></div>`).join('') : '<div class="empty">No report data yet.</div>';
-
-  document.querySelectorAll('.category').forEach(page=>{
-    const cat=page.dataset.category;
-    const rows=state.expenses.filter(x=>x.category===cat);
-    const monthTotal=rows.filter(x=>monthMatch(x.date)).reduce((a,x)=>a+Number(x.amount||0),0);
-    page.querySelector('.catMonth').textContent = money(monthTotal);
-    page.querySelector('.catCount').textContent = rows.length;
-    page.querySelector('.catList').innerHTML = rows.length ? rows.map(expenseHTML).join('') : '<div class="empty">No records in this category.</div>';
-  });
-
-  renderThemes();
-  const backups = JSON.parse(localStorage.getItem(BACKUP_KEY)||'[]');
-  document.getElementById('backupCount').textContent = backups.length+' snapshot'+(backups.length===1?'':'s');
-}
-document.getElementById('saveExpense').onclick=()=>{
-  const amount = Number(document.getElementById('expenseAmount').value);
-  if(!(amount>0)){alert('Enter a valid amount.'); return;}
-  state.expenses.unshift({
-    id:Date.now(), amount,
-    date:document.getElementById('expenseDate').value || today(),
-    category:document.getElementById('expenseCategory').value,
-    note:document.getElementById('expenseNote').value.trim()
-  });
-  document.getElementById('expenseAmount').value='';
-  document.getElementById('expenseNote').value='';
-  persist('expense-added');
-  go('home');
-};
-document.getElementById('saveSaving').onclick=()=>{
-  const amount=Number(document.getElementById('savingAmount').value);
-  if(!(amount>0)){alert('Enter a valid saving amount.'); return;}
-  state.savings.unshift({
-    id:Date.now(), amount,
-    date:document.getElementById('savingDate').value || today(),
-    note:document.getElementById('savingNote').value.trim()
-  });
-  document.getElementById('savingAmount').value='';
-  document.getElementById('savingNote').value='';
-  persist('saving-added');
-};
-document.getElementById('saveLedger').onclick=()=>{
-  const person=document.getElementById('ledgerPerson').value.trim();
-  const amount=Number(document.getElementById('ledgerAmount').value);
-  if(!person || !(amount>0)){alert('Enter person name and a valid amount.'); return;}
-  state.ledger.unshift({
-    id:Date.now(), person, amount,
-    type:document.getElementById('ledgerType').value,
-    note:document.getElementById('ledgerNote').value.trim(),
-    date:today()
-  });
-  document.getElementById('ledgerPerson').value='';
-  document.getElementById('ledgerAmount').value='';
-  document.getElementById('ledgerNote').value='';
-  persist('ledger-added');
-};
-document.getElementById('saveOffice').onclick=()=>{
-  state.officeBalance = Number(document.getElementById('officeInput').value || 0);
-  persist('office-balance-updated');
-  alert('Office balance preview updated.');
-};
-document.getElementById('exportBtn').onclick=()=>{
-  const payload={app:'Amir Personal Hisaab Neon',version:6,exportedAt:new Date().toISOString(),state,backups:JSON.parse(localStorage.getItem(BACKUP_KEY)||'[]')};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob); const a=document.createElement('a');
-  a.href=url; a.download='Amir_Personal_Hisaab_Neon_Backup_'+today()+'.json'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),1200);
-};
-document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
-document.getElementById('importFile').onchange=async (e)=>{
-  const file=e.target.files[0]; if(!file) return;
-  try{
-    const obj=JSON.parse(await file.text());
-    const incoming=obj.state || obj;
-    if(!incoming || (!Array.isArray(incoming.expenses) && !Array.isArray(incoming.savings) && !Array.isArray(incoming.ledger))) throw new Error('Invalid');
-    autoBackup('before-import');
-    state=Object.assign(blank(), incoming);
-    localStorage.setItem(DATA_KEY, JSON.stringify(state));
-    if(Array.isArray(obj.backups)) localStorage.setItem(BACKUP_KEY, JSON.stringify(obj.backups.slice(0,MAX_BACKUPS)));
-    renderAll();
-    alert('Backup restored successfully.');
-  }catch(err){alert('This backup file is not valid.');}
-  e.target.value='';
-};
-document.getElementById('restoreBtn').onclick=()=>{
-  const backups=JSON.parse(localStorage.getItem(BACKUP_KEY)||'[]');
-  if(!backups.length){alert('No automatic backup is available yet.'); return;}
-  if(!confirm('Restore the latest automatic backup?')) return;
-  try{
-    autoBackup('before-auto-restore');
-    state=Object.assign(blank(), JSON.parse(backups[0].data));
-    localStorage.setItem(DATA_KEY, JSON.stringify(state));
-    renderAll();
-    alert('Latest automatic backup restored.');
-  }catch(err){
-    alert('The latest backup could not be restored.');
-  }
-};
-function updateClock(){
-  const now=new Date();
-  let h=now.getHours(), m=String(now.getMinutes()).padStart(2,'0');
-  const h12=((h+11)%12)+1;
-  document.getElementById('clockView').textContent=`${h12}:${m}`;
-}
-updateClock(); setInterval(updateClock, 1000*30);
-applyTheme(state.theme); renderAll();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
-</script>
+  <script src="app.js"></script>
 </body>
 </html>
